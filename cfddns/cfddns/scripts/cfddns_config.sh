@@ -6,7 +6,7 @@ alias echo_date='echo 【$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X)】:'
 CONFIG_FILE="/tmp/cfddns_status.json"
 LOG_FILE="/tmp/upload/cfddns_log.txt"
 LOGTIME=$(TZ=UTC-8 date -R "+%Y-%m-%d %H:%M:%S")
-[ "$cfddns_method" = "" ] && cfddns_method="curl -s --interface ppp0 whatismyip.akamai.com"
+[ "$cfddns_method" = "" ] && cfddns_method="curl -s whatismyip.akamai.com"
 [ "$cfddns_ttl" = "" ] && cfddns_ttl="1"
 get_type="A"
 
@@ -50,11 +50,12 @@ get_info(){
 		exit 1
 	fi
 	
-	localip=`$cfddns_method 2>&1`
-	if [ $(echo $localip | grep -c "^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}$") -gt 0 ];then 
-		echo_date 本地IP为 $localip
+	localip=`$cfddns_method 2>&1` # | grep '([0-9]{1,3}\.){3}[0-9]{1,3}' -oE
+	if [ "$localip" != "" ];then
+		echo_date 本地IP获取成功： $localip
 	else
-		dbus set cfddns_status="【$LOGTIME】：获取本地IP错误！"
+		echo_date 本地IP获取失败： $localip
+		dbus set cfddns_status="【$LOGTIME】：获取本地IP错误! $localip"
 		exit 1
 	fi
 }
@@ -86,6 +87,7 @@ get_info_ipv6(){
 }
 
 update_ip(){
+	echo_date 开始更新 $update_to_ip
 	update_result=`update_record`
 	if [ $(echo $update_result | grep -c "\"success\":true") -gt 0 ];then 
 		echo_date 更新成功！
@@ -99,6 +101,7 @@ update_ip(){
 check_update(){
 	echo_date "CloudFlare DDNS更新启动!"
 	get_info
+	echo_date 获取信息完成
 	if [ "$localip" == "$current_ip" ];then
 		echo_date 两个IP相同，跳过更新！
 		dbus set cfddns_status="【$LOGTIME】：IP地址：$localip 未发生变化，跳过！"
@@ -108,7 +111,6 @@ check_update(){
 		update_ip
 		dbus set cfddns_status="【$LOGTIME】：IP地址：$localip 更新成功！"
 	fi
-	
 	# if [ "$cfddns_ipv6" == "1" ];then
 	# 	get_info_ipv6
 	# 	if [ "$localipv6" == "$current_ipv6" ];then
@@ -122,14 +124,20 @@ check_update(){
 	echo_date "======================================"
 }
 
-# add_cfddns_cru(){
-# 	sed -i '/cfddns/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
-# 	cru a cfddns "0 */$cfddns_refresh_time * * * /koolshare/scripts/cfddns_config.sh update"
-# }
-# 
-# stop_cfddns(){
-# 	sed -i '/cfddns/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
-# }
+add_cfddns_cru(){
+	if [ "$cfddns_refresh_time" != "0" ];then
+		sed -i '/cfddns/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
+		cru a cfddns "*/$cfddns_refresh_time * * * * /koolshare/scripts/cfddns_config.sh update"
+		# dbus delay cfddns_timer `dbus get cfddns_refresh_time` /koolshare/scripts/cfddns_config.sh update
+		echo_date 设置自动刷新成功：每 $cfddns_refresh_time 分钟
+	fi
+}
+
+stop_cfddns(){
+	sed -i '/cfddns/d' /var/spool/cron/crontabs/* >/dev/null 2>&1
+	# dbus remove __delay__cfddns_timer
+	echo_date 移除自动刷新
+}
 
 # ====================================used by init or cru====================================
 case $1 in
@@ -146,6 +154,8 @@ start)
 		echo_date "======================================" >> $LOG_FILE
 		echo_date "检测到网络拨号..." >> $LOG_FILE
 		check_update >> $LOG_FILE
+		echo_date "添加自动检测"
+		add_cfddns_cru
 	else
 		logger "[软件中心]: CloudFlare DDNS未设置开机启动，跳过！"
 	fi
@@ -164,6 +174,8 @@ case $2 in
 		[ ! -L "/koolshare/init.d/S99cfddns.sh" ] && ln -sf /koolshare/scripts/cfddns_config.sh /koolshare/init.d/S99cfddns.sh
 		echo_date "======================================" >> $LOG_FILE
 		check_update >> $LOG_FILE
+		echo_date "添加自动检测"
+		add_cfddns_cru
 	else
 		echo_date "关闭CloudFlare DDNS!" >> $LOG_FILE
 		stop_cfddns
