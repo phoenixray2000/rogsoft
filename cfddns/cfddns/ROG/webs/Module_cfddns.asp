@@ -467,7 +467,7 @@ function reload_Soft_Center(){
 														<li>使用IPV6时，需要在cloudflare上先添加AAAA记录。</li>
 														<li>上面的检测只代表服务器设置了IP地址，一般需要一段时间来生效，这跟服务器有关。</li>
 														<li>开启Cloudflare代理后，域名解析的IP地址为Cloudflare的IP，所有流量需经Cloudflare服务器再到你设备的IP，只适用于网页。</li>
-														<li>参考链接：<a href="https://www.cloudflare.com/" target="_blank" ><i><u>https://www.cloudflare.com/</u></i></a>，<a href="http://koolshare.cn/thread-147364-1-1.html" target="_blank" ><i><u>http://koolshare.cn/thread-147364-1-1.html</u></i></a></li>
+														<li>参考链接：<a href="https://www.cloudflare.com/" target="_blank" ><i><u>https://www.cloudflare.com/</u></i></a>，<a href="https://koolshare.cn/thread-169087-1-1.html" target="_blank" ><i><u>https://koolshare.cn/thread-169087-1-1.html</u></i></a></li>
 													</ul>
 												</td>
 												</tr>
