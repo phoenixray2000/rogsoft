@@ -31,22 +31,22 @@
 		border-radius: 5px 5px 0px 0px;
 		width:8.42%;
 		/*--------rog--------*/
-		border: 1px solid #91071f;
-		background: none;
+		/*border: 1px solid #91071f;*/
+		/*background: none;*/
 		/*--------non rog--------*/
-		/*border-left: 1px solid #67767d;*/
-		/*border-top: 1px solid #67767d;*/
-		/*border-right: 1px solid #67767d;*/
-		/*border-bottom: none;*/
-		/*background: #67767d;*/
+		border-left: 1px solid #67767d;
+		border-top: 1px solid #67767d;
+		border-right: 1px solid #67767d;
+		border-bottom: none;
+		background: #67767d;
 	}
 	.active {
 		/*--------rog--------*/
-		border: 1px solid #91071f;
-		background: #91071f;
+		/*border: 1px solid #91071f;*/
+		/*background: #91071f;*/
 		/*--------non rog--------*/
-		/*border: 1px solid #2f3a3e;*/
-		/*background: #2f3a3e;*/
+		border: 1px solid #2f3a3e;
+		background: #2f3a3e;
 	}
 	.ss_btn {
 		border: 1px solid #222;
@@ -56,9 +56,9 @@
 		border-radius: 5px 5px 5px 5px;
 		width:14%;
 		/*--------rog--------*/
-		background: linear-gradient(to bottom, #91071f  0%, #700618 100%);
+		/*background: linear-gradient(to bottom, #91071f  0%, #700618 100%);*/
 		/*--------non rog--------*/
-		/*background: linear-gradient(to bottom, #003333  0%, #000000 100%);*/
+		background: linear-gradient(to bottom, #003333  0%, #000000 100%);
 	}
 	.ss_btn:hover, .active3 {
 		border: 1px solid #222;
@@ -68,9 +68,9 @@
 		border-radius: 5px 5px 5px 5px;
 		width:14%;
 		/*--------rog--------*/
-		background: linear-gradient(to bottom, #cf0a2c  0%, #91071f 100%);
+		/*background: linear-gradient(to bottom, #cf0a2c  0%, #91071f 100%);*/
 		/*--------non rog--------*/
-		/*background: linear-gradient(to bottom, #27c9c9  0%, #279fd9 100%);*/
+		background: linear-gradient(to bottom, #27c9c9  0%, #279fd9 100%);
 	}
 	#log_content1{
 		width:97%;
@@ -84,17 +84,17 @@
 		overflow-x:hidden;
 		border:0px solid #222;
 		/*--------rog--------*/
-		background:transparent;
+		/*background:transparent;*/
 		/*--------non rog--------*/
-		/*background:#475A5F;*/
+		background:#475A5F;
 	}
-	#cfddns_switch, #cfddns_status, #cfddns_settings, #cfddns_log, #cfddns_help {
+	/*#cfddns_switch, #cfddns_status, #cfddns_settings, #cfddns_log, #cfddns_help {
 		border:1px solid #91071f;
-	}
-	/*#log_content{
+	}*/
+	#log_content{
 		outline: 1px solid #222;
 		width:748px;
-	}*/
+	}
 	input[type=button]:focus {
 		outline: none;
 	}
@@ -104,7 +104,7 @@ var dbus = {};
 var _responseLen;
 var noChange = 0;
 var x = 5;
-var params_inp = ['cfddns_email', 'cfddns_akey', 'cfddns_zid', 'cfddns_name', 'cfddns_domain', 'cfddns_ttl', 'cfddns_method'];
+var params_inp = ['cfddns_email', 'cfddns_akey', 'cfddns_zid', 'cfddns_name', 'cfddns_domain', 'cfddns_ttl', 'cfddns_method', 'cfddns_refresh_time'];
 var params_chk = ['cfddns_enable', 'cfddns_proxied'];
 //var params_chk = ['cfddns_enable', 'cfddns_proxied', 'cfddns_ipv6'];
 
@@ -360,7 +360,7 @@ function reload_Soft_Center(){
 															</label>
 														</div>
 														<div style="display:table-cell;float: left;margin-left:270px;margin-top:-32px;position: absolute;padding: 5.5px 0px;">
-															<a type="button" class="ss_btn" target="_blank" href="https://github.com/koolshare/rogsoft/blob/master/cfddns/Changelog.txt">更新日志</a>
+															<a type="button" class="ss_btn" target="_blank" href="https://github.com/phoenixray2000/rogsoft/blob/master/cfddns/Changelog.txt">更新日志</a>
 														</div>
 													</td>
 												</tr>
@@ -427,6 +427,12 @@ function reload_Soft_Center(){
 													</td>
 												</tr>
 												<tr>
+													<th title="设置更新频率，单位分钟">更新频率(min) 0禁用[?]</th>
+													<td>
+														<input type="text" maxlength="64" id="cfddns_refresh_time" name="cfddns_refresh_time" class="input_ss_table" style="width:130px;" autocomplete="off" autocorrect="off" autocapitalize="off" value="0" />
+													</td>
+												</tr>
+												<tr>
 													<th title="开启后所有流量经Cloudflare在到路由器">Cloudflare代理(proxied)[?]</th>
 													<td>
 														<input type="checkbox" id="cfddns_proxied" name="cfddns_proxied" >
@@ -441,7 +447,7 @@ function reload_Soft_Center(){
 												<tr>
 													<th title="可自行修改命令行，以获得正确的公网IP。如添加 '--interface vlan2' 以指定多播情况下的接口,可以空着">获得IP命令(get ip)[?]</th>
 													<td>
-														<input type="text" id="cfddns_method" name="cfddns_method" value="curl -s --interface ppp0 whatismyip.akamai.com" class="input_ss_table" style="width:98%;" autocomplete="off" autocorrect="off" autocapitalize="off" />
+														<input type="text" id="cfddns_method" name="cfddns_method" value="curl -s whatismyip.akamai.com" class="input_ss_table" style="width:98%;" autocomplete="off" autocorrect="off" autocapitalize="off" />
 													</td>
 												</tr>
 											</table>
