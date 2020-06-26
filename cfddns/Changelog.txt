@@ -1,6 +1,6 @@
 CloudFlare DDNS for asuswrt/merlin hnd/axhnd platform
 ----------------------
-2020-04 Update:CloudFlare 封了以下免费域名的API功能.cf, .ga, .gq, .ml, or .tk，使用以上域名的讲无法更新IP
+2020-04 Update:CloudFlare 封了以下免费域名的API功能.cf, .ga, .gq, .ml, or .tk，使用以上域名的将无法用API更新IP，可人工登录网页更新
 
 1.1
    - 增加定时刷新功能，可设置每n分钟刷新
